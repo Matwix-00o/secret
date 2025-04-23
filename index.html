@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geheimsprache Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        textarea {
+            display: block;
+            margin: 20px auto;
+            width: 80%;
+            height: 100px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        p {
+            text-align: center;
+            font-size: 16px;
+        }
+
+        span {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Geheimsprache Generator</h1>
+    <textarea id="inputText" placeholder="Gib deinen Text ein"></textarea>
+    <button onclick="generateSecret()">Generiere Geheimsprache</button>
+    <button onclick="translateBack()">Entschlüsseln</button>
+    <p>Geheimsprache: <span id="secretText"></span></p>
+    <p>Schlüssel: <span id="key"></span></p>
+    <p>Übersetzter Text: <span id="decodedText"></span></p>
+
+    <script>
+        let key = {};
+
+        function generateSecret() {
+            const input = document.getElementById("inputText").value;
+            let secret = "";
+            key = {};
+            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+
+            for (let char of input) {
+                if (!key[char]) {
+                    key[char] = characters[Math.floor(Math.random() * characters.length)];
+                }
+                secret += key[char];
+            }
+
+            document.getElementById("secretText").textContent = secret;
+            document.getElementById("key").textContent = JSON.stringify(key);
+        }
+
+        function translateBack() {
+            const secret = document.getElementById("secretText").textContent;
+            const reverseKey = Object.fromEntries(
+                Object.entries(key).map(([k, v]) => [v, k])
+            );
+
+            let decoded = "";
+            for (let char of secret) {
+                decoded += reverseKey[char] || char;
+            }
+
+            document.getElementById("decodedText").textContent = decoded;
+        }
+    </script>
+</body>
+</html>
